@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine? 💕</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffd1dc 0%, #ffb6c1 50%, #ffc0cb 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Flower Animations */
+        .flowers-container {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .flower {
+            position: absolute;
+            font-size: 40px;
+            animation: fall linear infinite;
+            opacity: 0.8;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0.3;
+            }
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Card Styling */
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 50px 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            animation: fadeInScale 0.8s ease-out;
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes fadeInScale {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Typography */
+        h1 {
+            color: #ff1493;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .apology {
+            font-size: 1.5em;
+            color: #ff69b4;
+            margin: 20px 0;
+            font-style: italic;
+        }
+
+        .love-note {
+            color: #d946a5;
+            font-size: 1.1em;
+            line-height: 1.8;
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(255, 182, 193, 0.3);
+            border-radius: 15px;
+            border-left: 4px solid #ff1493;
+        }
+
+        .question {
+            font-size: 2em;
+            color: #ff1493;
+            margin: 30px 0 20px 0;
+            font-weight: bold;
+        }
+
+        /* Buttons */
+        .button-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 1.3em;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .yes-btn {
+            background: linear-gradient(135deg, #ff1493, #ff69b4);
+            color: white;
+        }
+
+        .yes-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(255, 20, 147, 0.5);
+        }
+
+        .no-btn {
+            background: linear-gradient(135deg, #ddd, #bbb);
+            color: #666;
+        }
+
+        .no-btn:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(135deg, #ccc, #aaa);
+        }
+
+        /* Silly Question State */
+        .silly-question {
+            font-size: 1.8em;
+            color: #ff1493;
+            margin: 20px 0;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* Fireworks Page */
+        .fireworks-container {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: linear-gradient(135deg, #1e1e2e 0%, #2d1b4e 50%, #1a0933 100%);
+            display: none;
+            z-index: 100;
+        }
+
+        .fireworks-container.active {
+            display: block;
+        }
+
+        .celebration {
+            position: relative;
+            z-index: 101;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .celebration h1 {
+            font-size: 4em;
+            color: #fff;
+            text-shadow: 0 0 20px #ff1493, 0 0 40px #ff69b4;
+            animation: glow 1.5s ease-in-out infinite;
+            margin-bottom: 30px;
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                text-shadow: 0 0 20px #ff1493, 0 0 40px #ff69b4;
+            }
+            50% {
+                text-shadow: 0 0 30px #ff1493, 0 0 60px #ff69b4, 0 0 80px #ff1493;
+            }
+        }
+
+        .celebration p {
+            font-size: 1.8em;
+            max-width: 600px;
+            line-height: 1.6;
+            color: #ffb6c1;
+        }
+
+        /* Firework particles */
+        .firework {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            animation: explode 1.5s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: translate(0, 0);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--x), var(--y));
+                opacity: 0;
+            }
+        }
+
+        /* Hearts floating animation */
+        .heart {
+            position: absolute;
+            font-size: 30px;
+            animation: floatUp 4s ease-in infinite;
+            opacity: 0;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(180deg);
+                opacity: 0;
+            }
+        }
+
+        /* Hidden class */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Falling Flowers -->
+    <div class="flowers-container" id="flowersContainer"></div>
+
+    <!-- Main Content -->
+    <div class="container" id="mainContainer">
+        <div class="card">
+            <h1>💐 Hey Beautiful 💐</h1>
+            <p class="apology">I'm sorry for being such a pain in the ass</p>
+            
+            <div class="love-note">
+                I know I can be difficult sometimes, and I mess up more often than I'd like to admit.
+                But you make every day brighter, every moment sweeter, and every challenge worth facing.
+                You're the melody to my chaos, the calm to my storm, and the smile I look for in every room.
+                I promise to be better, to love you harder, and to make you laugh even when you want to be mad at me. 💕
+            </div>
+
+            <p class="question" id="question">Will you be my Valentine? 🌹</p>
+            
+            <div class="button-container" id="buttonContainer">
+                <button class="yes-btn" onclick="handleYes()">Yes! 💝</button>
+                <button class="no-btn" onclick="handleNo()">No</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fireworks Container -->
+    <div class="fireworks-container" id="fireworksContainer">
+        <div class="celebration">
+            <h1>🎉 YESSS! 🎉</h1>
+            <p>
+                You just made me the happiest person alive! 
+                I promise to love you, cherish you, and always be your biggest fan.
+                Here's to us, to love, and to endless adventures together! ❤️
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Create falling flowers
+        function createFlowers() {
+            const flowers = ['🌸', '🌺', '🌹', '🌷', '💐', '🌼', '🏵️'];
+            const container = document.getElementById('flowersContainer');
+            
+            for (let i = 0; i < 20; i++) {
+                const flower = document.createElement('div');
+                flower.className = 'flower';
+                flower.textContent = flowers[Math.floor(Math.random() * flowers.length)];
+                flower.style.left = Math.random() * 100 + '%';
+                flower.style.animationDuration = (Math.random() * 3 + 5) + 's';
+                flower.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(flower);
+            }
+        }
+
+        // Silly questions for the "No" button
+        const sillyQuestions = [
+            "Are you sure? 🥺",
+            "Are you really really sure? 😢",
+            "Come onnnnn? 🙏",
+            "Ohh pleaseeee? 💕",
+            "Pretty please? 🥹",
+            "With a cherry on top? 🍒",
+            "Just think about it? 💭",
+            "What if I said please again? 🥺",
+            "Can you reconsider? 💝",
+            "One more chance? 🌹",
+            "You're breaking my heart! 💔",
+            "I'll buy you ice cream? 🍦",
+            "I promise to be good! 😇",
+            "Don't do this to me! 😭",
+            "Think of all the good times! 🥰"
+        ];
+
+        let noClickCount = 0;
+
+        function handleNo() {
+            const question = document.getElementById('question');
+            question.className = 'silly-question';
+            question.textContent = sillyQuestions[noClickCount % sillyQuestions.length];
+            noClickCount++;
+            
+            // Reset animation
+            setTimeout(() => {
+                question.className = 'question';
+            }, 500);
+        }
+
+        function handleYes() {
+            document.getElementById('mainContainer').classList.add('hidden');
+            document.getElementById('fireworksContainer').classList.add('active');
+            
+            // Create fireworks
+            createFireworks();
+            
+            // Create floating hearts
+            createFloatingHearts();
+            
+            // Play celebration sound effect (browser will handle it)
+            playFireworks();
+        }
+
+        function createFireworks() {
+            const container = document.getElementById('fireworksContainer');
+            const colors = ['#ff1493', '#ff69b4', '#ffd700', '#00ff00', '#00bfff', '#ff6347', '#da70d6'];
+            
+            function launchFirework() {
+                const x = Math.random() * window.innerWidth;
+                const y = Math.random() * window.innerHeight * 0.5;
+                
+                const particleCount = 30;
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'firework';
+                    particle.style.left = x + 'px';
+                    particle.style.top = y + 'px';
+                    particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    const angle = (Math.PI * 2 * i) / particleCount;
+                    const velocity = 100 + Math.random() * 100;
+                    const xDist = Math.cos(angle) * velocity;
+                    const yDist = Math.sin(angle) * velocity;
+                    
+                    particle.style.setProperty('--x', xDist + 'px');
+                    particle.style.setProperty('--y', yDist + 'px');
+                    
+                    container.appendChild(particle);
+                    
+                    setTimeout(() => particle.remove(), 1500);
+                }
+            }
+            
+            // Launch multiple fireworks
+            for (let i = 0; i < 15; i++) {
+                setTimeout(launchFirework, i * 400);
+            }
+            
+            // Continue launching fireworks
+            setInterval(launchFirework, 1500);
+        }
+
+        function createFloatingHearts() {
+            const container = document.getElementById('fireworksContainer');
+            
+            function createHeart() {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.textContent = '❤️';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDelay = Math.random() * 2 + 's';
+                container.appendChild(heart);
+                
+                setTimeout(() => heart.remove(), 4000);
+            }
+            
+            // Create hearts continuously
+            setInterval(createHeart, 300);
+        }
+
+        function playFireworks() {
+            // Create multiple firework explosions over time
+            const times = [0, 200, 400, 600, 800, 1000, 1500, 2000];
+            times.forEach(time => {
+                setTimeout(() => {
+                    // Visual indicator only (no actual sound API used)
+                }, time);
+            });
+        }
+
+        // Initialize flowers on page load
+        createFlowers();
+    </script>
+</body>
+</html>
